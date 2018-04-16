@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 
 namespace RefactorKata
 {
@@ -7,26 +8,20 @@ namespace RefactorKata
     {
         static void Main(string[] args)
         {
-            var Conn = new System.Data.SqlClient.SqlConnection("Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;");
-
-            System.Data.SqlClient.SqlCommand cmd = Conn.CreateCommand();
+            var cmd = new SqlConnection("Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;").CreateCommand();
             cmd.CommandText = "select * from Products";
 
-            System.Data.SqlClient.SqlDataReader reader = cmd.ExecuteReader();
-            List<Product> products = new List<Product>();
-
-            
-            while (reader.Read())
+            while (cmd.ExecuteReader().Read())
             {
-                var prod = new Product();
-                prod.name = reader["Name"].ToString();
-                products.Add(prod);
+                var prod = new Product{ name = cmd.ExecuteReader()["Name"].ToString() };
+                new List<Product>().Add(prod);
             }
-            Conn.Dispose();
+
+            new System.Data.SqlClient.SqlConnection("Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;").Dispose();
             Console.WriteLine("Products Loaded!");
-            for (int i = 0; i < products.Count; i++)
+            for (int i = 0; i < new List<Product>().Count; i++)
             {
-                Console.WriteLine(products[i].name);
+                Console.WriteLine(new List<Product>()[i].name);
             }
         }
     }
