@@ -8,21 +8,22 @@ namespace RefactorKata
     {
         static void Main(string[] args)
         {
-            var cmd = new SqlConnection("Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;").CreateCommand();
-            cmd.CommandText = "select * from Products";
+            List<Product> products = new List<Product>();
 
-            while (cmd.ExecuteReader().Read())
+            using (var conn = new SqlConnection("Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"))
             {
-                var prod = new Product{ name = cmd.ExecuteReader()["Name"].ToString() };
-                new List<Product>().Add(prod);
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = "select * from Products";
+
+                var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                { products.Add(new Product { name = reader["Name"].ToString() }); }
             }
 
-            new System.Data.SqlClient.SqlConnection("Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;").Dispose();
             Console.WriteLine("Products Loaded!");
-            for (int i = 0; i < new List<Product>().Count; i++)
-            {
-                Console.WriteLine(new List<Product>()[i].name);
-            }
+            foreach (var Product in products)
+            { Console.WriteLine(Product.name); }
         }
     }
 }
