@@ -8,9 +8,10 @@ namespace RefactorKata
     {
         static void Main(string[] args)
         {
-            List<Product> products = new List<Product>();
+            List<Product> products = products = new List<Product>();
 
-            using (var conn = new SqlConnection("Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"))
+            using (var conn =
+                new SqlConnection("Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"))
             {
                 var cmd = conn.CreateCommand();
                 cmd.CommandText = "select * from Products";
@@ -18,12 +19,17 @@ namespace RefactorKata
                 var reader = cmd.ExecuteReader();
 
                 while (reader.Read())
-                { products.Add(new Product { name = reader["Name"].ToString() }); }
+                {
+                    products.Add(new Product {Name = reader["Name"].ToString()});
+                }
             }
 
             Console.WriteLine("Products Loaded!");
-            foreach (var Product in products)
-            { Console.WriteLine(Product.name); }
+
+            foreach (var product in products)
+            {
+                Console.WriteLine(product.Name);
+            }
         }
     }
 }
